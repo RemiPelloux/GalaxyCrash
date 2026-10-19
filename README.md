@@ -210,7 +210,9 @@ You need `platforms;android-37.0`, `build-tools;37.0.0`, and NDK `27.1.12297006`
 modules are committed under `app/src/main/jni/ko/`, so **podman and the DDK image are not needed** —
 upstream gitignores them and builds them per-KMI in CI; this fork ships them.
 
-Release builds are signed with `app/keystore.jks`, which is gitignored. Generate your own:
+Release builds are signed with `app/keystore.jks`, which is gitignored. Without it the build still
+succeeds and emits an **unsigned** APK, so a fresh clone can at least confirm it compiles. To produce
+an installable APK, generate your own key:
 
 ```sh
 keytool -genkeypair -v -keystore app/keystore.jks -alias dirtyfrag \

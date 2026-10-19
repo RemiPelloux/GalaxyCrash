@@ -18,21 +18,29 @@ android {
         }
     }
 
+    // The release keystore is deliberately not in the repo. Without it the build still
+    // works and produces an *unsigned* APK, so a fresh clone can verify it compiles;
+    // it just cannot be installed until you supply your own key.
+    val keystoreFile = file("keystore.jks")
+    val hasKeystore = keystoreFile.exists()
+
     signingConfigs {
-        create("keystore") {
-            storeFile = file("keystore.jks")
-            storePassword = "dirtyfrag"
-            keyAlias = "dirtyfrag"
-            keyPassword = "dirtyfrag"
+        if (hasKeystore) {
+            create("keystore") {
+                storeFile = keystoreFile
+                storePassword = "dirtyfrag"
+                keyAlias = "dirtyfrag"
+                keyPassword = "dirtyfrag"
+            }
         }
     }
 
     buildTypes {
         debug {
-            signingConfig = signingConfigs.getByName("keystore")
+            if (hasKeystore) signingConfig = signingConfigs.getByName("keystore")
         }
         release {
-            signingConfig = signingConfigs.getByName("keystore")
+            if (hasKeystore) signingConfig = signingConfigs.getByName("keystore")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
