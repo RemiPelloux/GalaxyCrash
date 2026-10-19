@@ -1,4 +1,4 @@
-package df.root;
+package com.galaxycrash.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * Where the movable card stack keeps its state: a device-protected prefs file
- * of its own, dfroot_ui. It must NOT go into dfroot.xml - bootstrap.c parses
+ * of its own, galaxycrash_ui. It must NOT go into galaxycrash.xml - bootstrap.c parses
  * that file with a 4 KB buffer and a naive strstr, so nothing that only the UI
  * reads may be added to it.
  *
@@ -19,7 +19,7 @@ import java.util.List;
  */
 final class CardLayoutStore {
 
-    private static final String PREFS = "dfroot_ui";
+    private static final String PREFS = "galaxycrash_ui";
     private static final String KEY_ORDER = "card_order";
     private static final String KEY_HIDDEN = "card_hidden";
     private static final String SEP = ",";

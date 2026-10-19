@@ -1,4 +1,4 @@
-package df.root;
+package com.galaxycrash.app;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -36,7 +36,7 @@ import android.util.Log;
  * slightly off-scale rather than shrinking it to a poster or blowing it up.
  *
  * <p>The cost of this is honest: the user's own accessibility setting no longer
- * applies inside DirtyFrag. It is a lock, not a compromise, so if that ever
+ * applies inside GalaxyCrash. It is a lock, not a compromise, so if that ever
  * needs to be relaxed it should be a switch in the Menu sheet rather than a
  * different constant here.
  */
@@ -75,7 +75,7 @@ public final class ScaleFix {
         boolean fontLocked = Math.abs(cfg.fontScale - 1f) > 0.001f;
         if (!densityLocked && !fontLocked) return base;
 
-        Log.i("DirtyFrag", "scale lock: " + cfg.densityDpi + "dpi/font " + cfg.fontScale
+        Log.i("GalaxyCrash", "scale lock: " + cfg.densityDpi + "dpi/font " + cfg.fontScale
                 + " -> " + dpi + "dpi/font 1.0 (" + sidePx + "px at "
                 + CALIBRATION_WIDTH_DP + "dp)");
         cfg.densityDpi = dpi;

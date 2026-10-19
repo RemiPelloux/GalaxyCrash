@@ -1,4 +1,4 @@
-package df.root;
+package com.galaxycrash.app;
 
 import android.animation.ValueAnimator;
 import android.content.Context;

@@ -1,4 +1,4 @@
-package df.root;
+package com.galaxycrash.app;
 
 import android.content.Context;
 import android.graphics.Canvas;

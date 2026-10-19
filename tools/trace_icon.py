@@ -293,7 +293,7 @@ def main():
            '<path fill="#FFFFFF" fill-rule="evenodd" d="%s"/></svg>' % d)
     open(os.path.join(OUT_DIR, "ic_launcher_dirtyfrag.svg"), "w").write(svg)
 
-    header = ('<!-- The DirtyFrag grenade, traced from icon-source.png (marching squares +\n'
+    header = ('<!-- The GalaxyCrash grenade, traced from icon-source.png (marching squares +\n'
               '     Ramer-Douglas-Peucker eps=1.0 + one Chaikin smoothing pass, 494 points,\n'
               '     IoU 0.9835 against the source mask). Regenerate with tools/trace_icon.py.\n'
               '     Placed on the canvas exactly as the v1.10 PNG foreground layer was.\n'

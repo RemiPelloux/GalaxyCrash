@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "DirtyFrag"
+rootProject.name = "GalaxyCrash"
 include(":app")

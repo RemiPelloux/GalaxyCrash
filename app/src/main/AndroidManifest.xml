@@ -9,11 +9,11 @@
          fixed <queries> allow-list is no longer enough. -->
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
     <application
-        android:label="DirtyFrag"
+        android:label="GalaxyCrash"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:theme="@style/Theme.DirtyFrag">
+        android:theme="@style/Theme.GalaxyCrash">
 
         <activity
             android:name=".MainActivity"

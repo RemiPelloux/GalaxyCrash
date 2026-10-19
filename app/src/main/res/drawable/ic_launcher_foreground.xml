@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The DirtyFrag grenade, traced from icon-source.png (marching squares +
+<!-- The GalaxyCrash grenade, traced from icon-source.png (marching squares +
      Ramer-Douglas-Peucker eps=1.0 + one Chaikin smoothing pass, 494 points,
      IoU 0.9835 against the source mask). Regenerate with tools/trace_icon.py.
      Placed on the canvas exactly as the v1.10 PNG foreground layer was.

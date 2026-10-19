@@ -1,5 +1,31 @@
 # Changelog
 
+## 1.17 — GalaxyCrash
+
+Renamed from DirtyFrag to **GalaxyCrash**. Package id changed from `df.root` to
+`com.galaxycrash.app`, so this is a clean install, not an in-place upgrade: uninstall the old app
+first. Because the kernel module hardcodes the device-protected storage path, all eight prebuilt
+`.ko` files were rebuilt from `lkm/dfroot.c` for this release.
+
+- **Renamed** to GalaxyCrash; new package `com.galaxycrash.app`, new toolbar title, new app label.
+  Prefs moved from `dfroot.xml` to `galaxycrash.xml`, and `bootstrap.c`'s `PREFS_PATH` /
+  `KSUD_STAGE` follow.
+- **Rebuilt all eight LKMs** with the new bootstrap path baked in. The modules are what make the
+  rename work; shipping the old ones would have launched a bootstrap that no longer exists.
+- **Fixed (F-001):** with *KernelSU Modules → Disabled* on a fresh KernelSU install, `opendir()` on
+  the missing `/data/adb/modules` returned `-1` and aborted the run **after** the kernel hook landed
+  but **before** `ksud` started, leaving SELinux permissive and no root. A missing modules directory
+  is now success; real errors still fail. Same failure as upstream issue #42.
+- **Fixed (F-002):** every root check trusted `/dev/df`, which a failed run leaves behind, so a
+  half-completed run rendered as `Rooted` / 100% / `Verified`. New `RootState` requires `/dev/df`
+  **and** `/dev/dfm6` (touched only once `ksud` starts). Also fixed the same check in
+  `ExploitRunner`, which skipped a legitimate re-run after a failure.
+- **Fixed:** the update check and the Github Page row pointed at the parent repo, which would have
+  offered an APK signed with a different key.
+- **Docs:** new README with animated SVGs, `LICENSE`, `LICENSING.md`, `THIRD_PARTY_NOTICES.md`.
+  Licensing is deliberately scoped: upstream publishes no license, so this fork licenses only its
+  own changes.
+
 ## Unreleased
 
 - Watching [chisewaguri/DFRoot](https://github.com/chisewaguri/DFRoot/tree/upstream-standalone): it drops

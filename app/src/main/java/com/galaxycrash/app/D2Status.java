@@ -1,4 +1,4 @@
-package df.root;
+package com.galaxycrash.app;
 
 import android.app.KeyguardManager;
 import android.content.Context;
@@ -23,7 +23,7 @@ import java.util.Locale;
  *
  * The vault itself is unreadable from an app: it lives in a trustlet behind
  * android.permission.ACCESS_VAULTKEEPER_SERVICE, which is signature|privileged,
- * and DirtyFrag is deliberately not a root client - it is the tool that gets you
+ * and GalaxyCrash is deliberately not a root client - it is the tool that gets you
  * root, so it has to work on a device that has none. Reading the vault is what
  * the first attempt at this feature did, which is why it could only ever answer
  * "unsupported" on a real Galaxy.

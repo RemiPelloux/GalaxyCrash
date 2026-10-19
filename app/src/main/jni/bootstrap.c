@@ -1,4 +1,5 @@
 #include <dirent.h>
+#include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,9 +10,9 @@
 #include <unistd.h>
 
 #define BLKROSET   0x125d
-#define KSUD_STAGE "/data/user_de/0/df.root/ksud"
+#define KSUD_STAGE "/data/user_de/0/com.galaxycrash.app/ksud"
 #define KSUD       "/data/adb/ksud"
-#define PREFS_PATH "/data/user_de/0/df.root/shared_prefs/dfroot.xml"
+#define PREFS_PATH "/data/user_de/0/com.galaxycrash.app/shared_prefs/galaxycrash.xml"
 #define MODULES_DIR "/data/adb/modules"
 
 static int pref_true(const char *buf, const char *key)
@@ -174,12 +175,19 @@ static void touch(const char *path)
 }
 
 /* Mark every installed module disabled before ksud runs. A broken module
- * otherwise loads on the next boot and bootloops the device. */
+ * otherwise loads on the next boot and bootloops the device.
+ *
+ * A missing modules directory is success, not failure: on a fresh KernelSU
+ * install with no modules there is nothing to disable, and the user asking for
+ * "modules off" is already satisfied. Returning -1 here aborted the whole run
+ * before ksud was started, leaving SELinux permissive and /dev/df on disk - the
+ * "EXPLOIT FAILED: DISABLE MODULES FAILED" report on SM-S948B (issue #42).
+ * Any other opendir error (EACCES) is still a real failure and is reported. */
 static int disable_modules(void)
 {
     DIR *dir = opendir(MODULES_DIR);
     if (!dir)
-        return -1;
+        return errno == ENOENT ? 0 : -1;
 
     struct dirent *ent;
     while ((ent = readdir(dir))) {

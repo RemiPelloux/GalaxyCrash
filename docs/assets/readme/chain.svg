@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="300" viewBox="0 0 1280 300" role="img" aria-labelledby="t">
+<title id="t">The DirtyFrag chain: ESP transform writes the page cache, crash_dump64 bridges into vendor_file, libc++ runs shellcode as uid 0, the module loads, bootstrap starts ksud.</title>
+<style>
+.sans { font-family: Manrope, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; }
+.mono { font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.dim { fill: #8fa8bc; }
+.rise { animation: rise .9s cubic-bezier(.22,1,.36,1) both; }
+.s1 { animation-delay: .10s; } .s2 { animation-delay: .28s; } .s3 { animation-delay: .46s; }
+.s4 { animation-delay: .64s; } .s5 { animation-delay: .82s; } .s6 { animation-delay: 1.00s; }
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.wire { stroke: #8fa8bc; stroke-opacity: .28; stroke-width: 2; fill: none; }
+.pulse { stroke: #7fd1a8; stroke-width: 2.5; fill: none; stroke-linecap: round;
+  stroke-dasharray: 10 340; animation: flow 3.6s linear infinite; }
+.q2 { animation-delay: .6s; } .q3 { animation-delay: 1.2s; }
+.q4 { animation-delay: 1.8s; } .q5 { animation-delay: 2.4s; }
+@keyframes flow { from { stroke-dashoffset: 350; } to { stroke-dashoffset: 0; } }
+.led { fill: #7fd1a8; animation: led 2.6s ease-in-out infinite; }
+.l2 { animation-delay: .4s; } .l3 { animation-delay: .8s; }
+.l4 { animation-delay: 1.2s; } .l5 { animation-delay: 1.6s; } .l6 { animation-delay: 2.0s; }
+@keyframes led { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+.card { fill: #0e1c2e; stroke: rgba(143,168,188,0.18); }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; } .pulse { opacity: 0; } }
+</style>
+<defs>
+  <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#071018"/><stop offset="1" stop-color="#0e1c2e"/>
+  </linearGradient>
+  <clipPath id="f2"><rect width="1280" height="300" rx="18"/></clipPath>
+</defs>
+<g clip-path="url(#f2)">
+  <rect width="1280" height="300" fill="url(#bg2)"/>
+  <text x="48" y="44" class="mono dim" style="font-size:13px;letter-spacing:.2em">THE CHAIN · EVERY STEP RUNS AS A LOWER PRIVILEGE THAN THE NEXT</text>
+
+  <!-- connectors -->
+  <path class="wire" d="M244 168 H288"/><path class="pulse" d="M244 168 H288"/>
+  <path class="wire" d="M456 168 H500"/><path class="pulse q2" d="M456 168 H500"/>
+  <path class="wire" d="M668 168 H712"/><path class="pulse q3" d="M668 168 H712"/>
+  <path class="wire" d="M880 168 H924"/><path class="pulse q4" d="M880 168 H924"/>
+  <path class="wire" d="M1092 168 H1136"/><path class="pulse q5" d="M1092 168 H1136"/>
+
+  <g class="rise s1">
+    <rect class="card" x="36" y="104" width="208" height="128" rx="12"/>
+    <circle class="led" cx="56" cy="126" r="4"/>
+    <text x="68" y="130" class="mono" style="font-size:12px" fill="#7fd1a8">01 · XFRM</text>
+    <text x="52" y="160" class="sans" style="font-size:15px;font-weight:600" fill="#f4efe6">ESP transform</text>
+    <text x="52" y="184" class="mono dim" style="font-size:11px">IV forged so the</text>
+    <text x="52" y="202" class="mono dim" style="font-size:11px">decrypt lands where</text>
+    <text x="52" y="220" class="mono dim" style="font-size:11px">we want it</text>
+  </g>
+
+  <g class="rise s2">
+    <rect class="card" x="288" y="104" width="168" height="128" rx="12"/>
+    <circle class="led l2" cx="308" cy="126" r="4"/>
+    <text x="320" y="130" class="mono" style="font-size:12px" fill="#7fd1a8">02 · BRIDGE</text>
+    <text x="304" y="160" class="sans" style="font-size:15px;font-weight:600" fill="#f4efe6">crash_dump64</text>
+    <text x="304" y="184" class="mono dim" style="font-size:11px">spliced in;</text>
+    <text x="304" y="202" class="mono dim" style="font-size:11px">can open</text>
+    <text x="304" y="220" class="mono dim" style="font-size:11px">vendor_file</text>
+  </g>
+
+  <g class="rise s3">
+    <rect class="card" x="500" y="104" width="168" height="128" rx="12"/>
+    <circle class="led l3" cx="520" cy="126" r="4"/>
+    <text x="532" y="130" class="mono" style="font-size:12px" fill="#7fd1a8">03 · DROP</text>
+    <text x="516" y="160" class="sans" style="font-size:15px;font-weight:600" fill="#f4efe6">dfroot.ko</text>
+    <text x="516" y="184" class="mono dim" style="font-size:11px">written into a</text>
+    <text x="516" y="202" class="mono dim" style="font-size:11px">vendor_file path,</text>
+    <text x="516" y="220" class="mono dim" style="font-size:11px">signature bypassed</text>
+  </g>
+
+  <g class="rise s4">
+    <rect class="card" x="712" y="104" width="168" height="128" rx="12"/>
+    <circle class="led l4" cx="732" cy="126" r="4"/>
+    <text x="744" y="130" class="mono" style="font-size:12px" fill="#7fd1a8">04 · HOOK</text>
+    <text x="728" y="160" class="sans" style="font-size:15px;font-weight:600" fill="#f4efe6">libc++.so</text>
+    <text x="728" y="184" class="mono dim" style="font-size:11px">sentry() runs our</text>
+    <text x="728" y="202" class="mono dim" style="font-size:11px">code as uid 0,</text>
+    <text x="728" y="220" class="mono dim" style="font-size:11px">then insmod</text>
+  </g>
+
+  <g class="rise s5">
+    <rect class="card" x="924" y="104" width="168" height="128" rx="12"/>
+    <circle class="led l5" cx="944" cy="126" r="4"/>
+    <text x="956" y="130" class="mono" style="font-size:12px" fill="#7fd1a8">05 · MODULE</text>
+    <text x="940" y="160" class="sans" style="font-size:15px;font-weight:600" fill="#f4efe6">dfroot init</text>
+    <text x="940" y="184" class="mono dim" style="font-size:11px">SELinux permissive,</text>
+    <text x="940" y="202" class="mono dim" style="font-size:11px">DEFEX off, then</text>
+    <text x="940" y="220" class="mono dim" style="font-size:11px">usermodehelper</text>
+  </g>
+
+  <g class="rise s6">
+    <rect x="1136" y="104" width="108" height="128" rx="12" fill="#0e1c2e" stroke="#7fd1a8" stroke-opacity=".55"/>
+    <circle class="led l6" cx="1156" cy="126" r="4"/>
+    <text x="1168" y="130" class="mono" style="font-size:12px" fill="#7fd1a8">06 · SU</text>
+    <text x="1152" y="164" class="sans" style="font-size:15px;font-weight:600" fill="#f4efe6">ksud</text>
+    <text x="1152" y="188" class="mono dim" style="font-size:11px">starts</text>
+    <text x="1152" y="206" class="mono dim" style="font-size:11px">from your</text>
+    <text x="1152" y="224" class="mono dim" style="font-size:11px">manager</text>
+  </g>
+</g>
+</svg>

@@ -1,4 +1,4 @@
-package df.root;
+package com.galaxycrash.app;
 
 import android.content.Context;
 import android.content.ComponentName;
@@ -27,7 +27,7 @@ import androidx.core.content.res.ResourcesCompat;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import df.root.databinding.ActivityMainBinding;
+import com.galaxycrash.app.databinding.ActivityMainBinding;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,7 +39,7 @@ import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity implements IReporter {
 
-    private static final String TAG = "dfroot";
+    private static final String TAG = "galaxycrash";
 
     private ActivityMainBinding binding;
     private final Handler mMain = new Handler(Looper.getMainLooper());
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements IReporter {
     private android.animation.ValueAnimator updateMorph;
     private TextView titleView;
     /** The headline's width in px, taken from the toolbar's own title paint - the
-     *  only paint that knows how wide "DirtyFrag" renders, and therefore how wide
+     *  only paint that knows how wide "GalaxyCrash" renders, and therefore how wide
      *  the update pill has to be to cover it. See showUpdatePill. */
     private int headlinePx;
     /** The last Odin reading, kept for the pill's submenu. Null until first read. */
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements IReporter {
     private boolean moduleRefresh;
 
     /** Device-protected storage context: bootstrap.c reads its prefs from
-     *  /data/user_de/0/df.root/, so every pref the exploit depends on must live
+     *  /data/user_de/0/com.galaxycrash.app/, so every pref the exploit depends on must live
      *  there, not in credential-protected storage. */
     private Context mDeCtx;
     /** Package name of the SU manager whose libksud.so gets staged, or null. */
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements IReporter {
 
     // ---- Movable card stack (VIS1 - VIS5) -----------------------------------
 
-    /** The card keys as they are written to dfroot_ui, in the shipped order.
+    /** The card keys as they are written to galaxycrash_ui, in the shipped order.
      *  "sumanager" is first and is the one card that can never be hidden. */
     private static final String[] CARD_KEYS = {"sumanager", "autorun", "modules", "log"};
     /** Hide button per card, index-parallel to CARD_KEYS. They live in the root
@@ -266,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements IReporter {
         advancedLog = on;
         binding.switchAdvancedLog.setChecked(on);
         createDeviceProtectedStorageContext()
-                .getSharedPreferences("dfroot", MODE_PRIVATE)
+                .getSharedPreferences("galaxycrash", MODE_PRIVATE)
                 .edit().putBoolean("advanced_log", on).apply();
         updateLogVisibility();
     }
@@ -398,7 +398,7 @@ public class MainActivity extends AppCompatActivity implements IReporter {
         }
         // Remember which boot this log came from - it is invalidated on reboot.
         createDeviceProtectedStorageContext()
-                .getSharedPreferences("dfroot", MODE_PRIVATE)
+                .getSharedPreferences("galaxycrash", MODE_PRIVATE)
                 .edit().putInt("log_boot_count", bootCount()).apply();
     }
 
@@ -468,7 +468,7 @@ public class MainActivity extends AppCompatActivity implements IReporter {
         // releases page. No newer release, no pill - the header stays the plain word.
         binding.updatePill.setOnClickListener(v -> {
             v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
-            openUrl("https://github.com/mitschud/DirtyFrag/releases");
+            openUrl("https://github.com/RemiPelloux/GalaxyCrash/releases");
         });
         mExec.execute(this::checkForAppUpdate);
 
@@ -498,7 +498,7 @@ public class MainActivity extends AppCompatActivity implements IReporter {
         // flag file in every installed module before ksud runs, so the toggle
         // works before the device is rooted and applies on the next root.
         moduleRefresh = true;
-        binding.switchModules.setChecked(!mDeCtx.getSharedPreferences("dfroot", MODE_PRIVATE)
+        binding.switchModules.setChecked(!mDeCtx.getSharedPreferences("galaxycrash", MODE_PRIVATE)
                 .getBoolean("disable_modules", false));
         moduleRefresh = false;
         binding.modulesSubtitle.setText(binding.switchModules.isChecked()
@@ -528,12 +528,12 @@ public class MainActivity extends AppCompatActivity implements IReporter {
                     // been set, because that is the combination the headline renders
                     // in - and the update pill has to be exactly this wide to cover it.
                     headlinePx = Math.round(
-                            titleView.getPaint().measureText("DirtyFrag"));
+                            titleView.getPaint().measureText("GalaxyCrash"));
                 }
             }
         });
 
-        if (new File("/dev/df").exists()) {
+        if (isRooted()) {
             setRootedState();
         }
 
@@ -542,11 +542,11 @@ public class MainActivity extends AppCompatActivity implements IReporter {
         // always starts with a clean screen (log + share icon hidden).
         lastLogFile = new File(createDeviceProtectedStorageContext().getFilesDir(), "last_run.log");
         int savedBoot = createDeviceProtectedStorageContext()
-                .getSharedPreferences("dfroot", MODE_PRIVATE).getInt("log_boot_count", -1);
+                .getSharedPreferences("galaxycrash", MODE_PRIVATE).getInt("log_boot_count", -1);
         if (lastLogFile.exists() && savedBoot != bootCount()) {
             lastLogFile.delete();
             createDeviceProtectedStorageContext()
-                    .getSharedPreferences("dfroot", MODE_PRIVATE)
+                    .getSharedPreferences("galaxycrash", MODE_PRIVATE)
                     .edit().putBoolean("last_run_success", false).apply();
         }
         String last = readLastLog();
@@ -568,7 +568,7 @@ public class MainActivity extends AppCompatActivity implements IReporter {
 
         // Advanced log toggle: full log vs. simple status (progress bar only).
         advancedLog = createDeviceProtectedStorageContext()
-                .getSharedPreferences("dfroot", MODE_PRIVATE)
+                .getSharedPreferences("galaxycrash", MODE_PRIVATE)
                 .getBoolean("advanced_log", false);
         binding.switchAdvancedLog.setChecked(advancedLog);
         binding.switchAdvancedLog.setOnCheckedChangeListener(
@@ -577,10 +577,10 @@ public class MainActivity extends AppCompatActivity implements IReporter {
 
         // Restore the simple status for the current state: rooted device or a
         // successful last run -> 100% + Verified; failed run -> Failed.
-        boolean rootedNow = new File("/dev/df").exists();
+        boolean rootedNow = isRooted();
         boolean lastSuccess = hasLastLog
                 && createDeviceProtectedStorageContext()
-                        .getSharedPreferences("dfroot", MODE_PRIVATE)
+                        .getSharedPreferences("galaxycrash", MODE_PRIVATE)
                         .getBoolean("last_run_success", false);
         boolean lastFailed = hasLastLog
                 && last.toLowerCase().contains("=== exploit failed");
@@ -614,7 +614,7 @@ public class MainActivity extends AppCompatActivity implements IReporter {
             logBuffer.setLength(0);
             if (lastLogFile.exists()) lastLogFile.delete();
             createDeviceProtectedStorageContext()
-                    .getSharedPreferences("dfroot", MODE_PRIVATE)
+                    .getSharedPreferences("galaxycrash", MODE_PRIVATE)
                     .edit().putBoolean("last_run_success", false).apply();
             appendLog(LOG_HEADER);
             binding.twoStep.reset();
@@ -652,7 +652,7 @@ public class MainActivity extends AppCompatActivity implements IReporter {
         binding.btnMenu.setOnClickListener(v -> {
             v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
             float md = getResources().getDisplayMetrics().density;
-            boolean rootedMenu = new File("/dev/df").exists();
+            boolean rootedMenu = isRooted();
             final android.widget.PopupWindow[] pwRef = {null};
 
             android.widget.LinearLayout box = new android.widget.LinearLayout(this);
@@ -670,7 +670,7 @@ public class MainActivity extends AppCompatActivity implements IReporter {
             ghRow.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 15);
             ghRow.setOnClickListener(v2 -> {
                 v2.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
-                openUrl("https://github.com/mitschud/DirtyFrag");
+                openUrl("https://github.com/RemiPelloux/GalaxyCrash");
             });
             box.addView(ghRow, new android.widget.LinearLayout.LayoutParams(
                     android.view.ViewGroup.LayoutParams.MATCH_PARENT, (int) (46 * md)));
@@ -699,7 +699,7 @@ public class MainActivity extends AppCompatActivity implements IReporter {
                 v2.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
                 expertMode = !expertMode;
                 createDeviceProtectedStorageContext()
-                        .getSharedPreferences("dfroot", MODE_PRIVATE)
+                        .getSharedPreferences("galaxycrash", MODE_PRIVATE)
                         .edit().putBoolean("expert_mode", expertMode).apply();
                 applyExpertMode();
                 if (dotRef[0] != null)
@@ -798,24 +798,24 @@ public class MainActivity extends AppCompatActivity implements IReporter {
         });
 
         boolean autoSoftReboot = createDeviceProtectedStorageContext()
-                .getSharedPreferences("dfroot", MODE_PRIVATE)
+                .getSharedPreferences("galaxycrash", MODE_PRIVATE)
                 .getBoolean("auto_soft_reboot", false);
         binding.switchAutoSoftReboot.setChecked(autoSoftReboot);
         binding.switchAutoSoftReboot.setEnabled(bootEnabled);
         binding.switchAutoSoftReboot.setOnCheckedChangeListener((btn, checked) ->
             createDeviceProtectedStorageContext()
-                .getSharedPreferences("dfroot", MODE_PRIVATE)
+                .getSharedPreferences("galaxycrash", MODE_PRIVATE)
                 .edit().putBoolean("auto_soft_reboot", checked).apply());
 
         // Expert mode gates the autorun card: locked until toggled in the menu.
         expertMode = createDeviceProtectedStorageContext()
-                .getSharedPreferences("dfroot", MODE_PRIVATE)
+                .getSharedPreferences("galaxycrash", MODE_PRIVATE)
                 .getBoolean("expert_mode", false);
         applyExpertMode();
 
         // Movable card stack (VIS1 - VIS5): hold-to-lift reorder with the card
         // stuck to the finger, the per-card hide badge and the order + hidden
-        // flags from dfroot_ui.
+        // flags from galaxycrash_ui.
         setupCardStack();
 
         // Run stays locked until an SU manager is selected (and, after a failed
@@ -1103,7 +1103,7 @@ public class MainActivity extends AppCompatActivity implements IReporter {
         saveCardLayout();
     }
 
-    /** Write the stack order and the hidden flags to dfroot_ui. */
+    /** Write the stack order and the hidden flags to galaxycrash_ui. */
     private void saveCardLayout() {
         List<String> keys = new ArrayList<>();
         for (View v : binding.cardStack.cardOrder()) {
@@ -1147,7 +1147,7 @@ public class MainActivity extends AppCompatActivity implements IReporter {
      *  (a broken module otherwise bootloops the device). OFF = modules stay
      *  disabled on the next root, ON = modules load. No su required. */
     private void applyModuleState(boolean on) {
-        SharedPreferences sp = mDeCtx.getSharedPreferences("dfroot", MODE_PRIVATE);
+        SharedPreferences sp = mDeCtx.getSharedPreferences("galaxycrash", MODE_PRIVATE);
         SharedPreferences.Editor ed = sp.edit();
         if (on) ed.remove("disable_modules");
         else ed.putBoolean("disable_modules", true);
@@ -1191,7 +1191,7 @@ public class MainActivity extends AppCompatActivity implements IReporter {
     /** Restores the saved selection, dropping it if that app is gone or no
      *  longer ships libksud.so. */
     private void loadSuManagerPref() {
-        SharedPreferences sp = mDeCtx.getSharedPreferences("dfroot", MODE_PRIVATE);
+        SharedPreferences sp = mDeCtx.getSharedPreferences("galaxycrash", MODE_PRIVATE);
         String saved = sp.getString("su_manager", null);
         suManagerPkg = null;
         suManagerLabel = null;
@@ -1326,7 +1326,7 @@ public class MainActivity extends AppCompatActivity implements IReporter {
 
     /** Writes the DE pref that bootstrap.c reads as su_manager, then unlocks Run. */
     private void selectSuManager(SuManagerEntry e) {
-        mDeCtx.getSharedPreferences("dfroot", MODE_PRIVATE)
+        mDeCtx.getSharedPreferences("galaxycrash", MODE_PRIVATE)
                 .edit().putString("su_manager", e.packageName).apply();
         suManagerPkg = e.packageName;
         suManagerLabel = e.label;
@@ -1337,13 +1337,13 @@ public class MainActivity extends AppCompatActivity implements IReporter {
 
     /** Run needs a manager selected, no failed-run lock and no existing root. */
     private boolean canRun() {
-        return suManagerPkg != null && !failedRun && !new File("/dev/df").exists();
+        return suManagerPkg != null && !failedRun && !isRooted();
     }
 
     /** Single place that decides the Run pill's look and enabled state. */
     private void updateRunButton() {
         if (running) return;
-        if (new File("/dev/df").exists()) {
+        if (isRooted()) {
             setRootedState(true);
             return;
         }
@@ -1362,7 +1362,7 @@ public class MainActivity extends AppCompatActivity implements IReporter {
 
     /**
      * The headline's update state: a lime capsule exactly as wide as the word
-     * "DirtyFrag" and the same 44dp module as the two toolbar controls to its right,
+     * "GalaxyCrash" and the same 44dp module as the two toolbar controls to its right,
      * which wipes in from the left edge and reads "Update" in the headline's place.
      * The version number used to ride here in a small pill over the digits; the
      * headline is the app's own name, and covering it with the one thing that might
@@ -1435,12 +1435,12 @@ public class MainActivity extends AppCompatActivity implements IReporter {
     private void checkForAppUpdate() {
         try {
             java.net.HttpURLConnection conn = (java.net.HttpURLConnection)
-                    new java.net.URL("https://api.github.com/repos/mitschud/DirtyFrag/releases/latest")
+                    new java.net.URL("https://api.github.com/repos/RemiPelloux/GalaxyCrash/releases/latest")
                             .openConnection();
             conn.setConnectTimeout(8000);
             conn.setReadTimeout(8000);
             conn.setRequestProperty("Accept", "application/vnd.github+json");
-            conn.setRequestProperty("User-Agent", "DirtyFrag");
+            conn.setRequestProperty("User-Agent", "GalaxyCrash");
             if (conn.getResponseCode() != 200) return;
             java.io.BufferedReader reader = new java.io.BufferedReader(
                     new java.io.InputStreamReader(conn.getInputStream()));
@@ -1844,10 +1844,16 @@ public class MainActivity extends AppCompatActivity implements IReporter {
         }
     }
 
+    /** True when this run actually produced a working SU daemon - see
+     *  {@link RootState}. Kept as a local alias so the call sites read plainly. */
+    private static boolean isRooted() {
+        return RootState.isRooted();
+    }
+
     private void runExploit() {
         // bootstrap.c reads soft_reboot straight out of the DE prefs, so mirror
         // the Autorun card's choice into the key it reads right before launch.
-        SharedPreferences sp = mDeCtx.getSharedPreferences("dfroot", MODE_PRIVATE);
+        SharedPreferences sp = mDeCtx.getSharedPreferences("galaxycrash", MODE_PRIVATE);
         boolean autoSoftReboot = sp.getBoolean("auto_soft_reboot", false);
         sp.edit().putBoolean("soft_reboot", autoSoftReboot).apply();
         lastFailReason = null;
@@ -1862,7 +1868,7 @@ public class MainActivity extends AppCompatActivity implements IReporter {
                         : "failed to patch files";
                 report("\n=== exploit failed: " + why + " ===\n");
             }
-            mDeCtx.getSharedPreferences("dfroot", MODE_PRIVATE)
+            mDeCtx.getSharedPreferences("galaxycrash", MODE_PRIVATE)
                     .edit().putBoolean("last_run_success", rc == 0).apply();
         } catch (Exception e) {
             Log.e(TAG, "exploit exception", e);
@@ -1870,11 +1876,14 @@ public class MainActivity extends AppCompatActivity implements IReporter {
         } finally {
             mMain.post(() -> {
                 running = false;
-                boolean rooted = new File("/dev/df").exists();
+                boolean rooted = isRooted();
                 if (rooted) {
                     setRootedState(true);
                     binding.twoStep.setSeg2(1f, "Verified", 0xFFFFFFFF);
                 } else {
+                    // A failed run can leave /dev/df behind (F-001), which would
+                    // otherwise render as a verified root on the next launch.
+                    failedRun = true;
                     setFailedState();
                     setRootedState(false);
                 }

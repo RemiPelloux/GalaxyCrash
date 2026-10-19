@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Shrink the bundled Inter variable font to the glyphs DirtyFrag can render.
+"""Shrink the bundled Inter variable font to the glyphs GalaxyCrash can render.
 
 res/font/inter_vf.ttf is upstream Inter v4.1 (rsms/inter, SIL OFL 1.1) in full:
 2,852 codepoints / 2,937 glyphs, axes opsz 14-32 and wght 100-900. Half the file
@@ -72,7 +72,7 @@ LATIN_ONLY_RANGES = [
     (0x2700, 0x27BF),
 ]
 
-# The set DirtyFrag ships with: everything LATIN_ONLY_RANGES covers plus the
+# The set GalaxyCrash ships with: everything LATIN_ONLY_RANGES covers plus the
 # combining diacritical marks, so a name written in decomposed Unicode (NFD -
 # base letter plus a combining mark, which is what macOS-derived filenames and
 # some module.prop files contain) still renders its accents in Inter instead of

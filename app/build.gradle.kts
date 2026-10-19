@@ -3,15 +3,15 @@ plugins {
 }
 
 android {
-    namespace = "df.root"
+    namespace = "com.galaxycrash.app"
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "df.root"
+        applicationId = "com.galaxycrash.app"
         minSdk = 32
         targetSdk = 37
-        versionCode = 33
-        versionName = "1.16"
+        versionCode = 34
+        versionName = "1.17"
 
         ndk {
             abiFilters += listOf("arm64-v8a")
@@ -46,7 +46,7 @@ android {
 androidComponents {
     onVariants { variant ->
         variant.outputs.forEach { output ->
-            output.outputFileName.set("dirtyfrag.apk")
+            output.outputFileName.set("galaxycrash.apk")
         }
     }
 }
