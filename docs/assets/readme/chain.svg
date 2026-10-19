@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="300" viewBox="0 0 1280 300" role="img" aria-labelledby="t">
-<title id="t">The DirtyFrag chain: ESP transform writes the page cache, crash_dump64 bridges into vendor_file, libc++ runs shellcode as uid 0, the module loads, bootstrap starts ksud.</title>
+<title id="t">The GalaxyCrash chain: ESP transform writes the page cache, crash_dump64 bridges into vendor_file, libc++ runs shellcode as uid 0, the module loads, bootstrap starts ksud.</title>
 <style>
 .sans { font-family: Manrope, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; }
 .mono { font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }

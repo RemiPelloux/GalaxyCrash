@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="460" viewBox="0 0 1280 460" role="img" aria-labelledby="t">
-<title id="t">DirtyFrag — root on a locked bootloader, no custom kernel, gone on reboot</title>
+<title id="t">GalaxyCrash — root on a locked bootloader, no custom kernel, gone on reboot</title>
 <style>
 
 .serif { font-family: Fraunces, 'Iowan Old Style', Georgia, 'Times New Roman', serif; }
@@ -55,7 +55,7 @@
   <ellipse class="glow" cx="1120" cy="120" rx="260" ry="180" fill="url(#mint)"/>
 
   <text x="64" y="104" class="mono dim rise" style="font-size:14px;letter-spacing:.22em">CVE-2026-43284 · LOCKED BOOTLOADER · EPHEMERAL ROOT</text>
-  <text x="60" y="196" class="serif rise d1" style="font-size:92px;font-weight:700" fill="#f4efe6">DirtyFrag</text>
+  <text x="60" y="196" class="serif rise d1" style="font-size:92px;font-weight:700" fill="#f4efe6">GalaxyCrash</text>
   <text x="64" y="246" class="sans rise d2" style="font-size:26px;font-weight:600" fill="#7fd1a8">Root without unlocking the bootloader.</text>
   <text x="64" y="290" class="sans rise d2" style="font-size:18px" fill="#e8e2d6">No custom kernel, no Odin, no data wipe — a page-cache write</text>
   <text x="64" y="316" class="sans rise d2" style="font-size:18px" fill="#e8e2d6">loads a signed-by-nobody module through <tspan class="mono" style="font-size:17px" fill="#7fd1a8">splice()</tspan>.</text>
