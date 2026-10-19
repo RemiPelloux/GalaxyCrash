@@ -20,6 +20,9 @@ first. Because the kernel module hardcodes the device-protected storage path, al
   half-completed run rendered as `Rooted` / 100% / `Verified`. New `RootState` requires `/dev/df`
   **and** `/dev/dfm6` (touched only once `ksud` starts). Also fixed the same check in
   `ExploitRunner`, which skipped a legitimate re-run after a failure.
+- **Fixed (F-003):** `ExploitRunner` kept its own `new File("/dev/df").exists()` check after the F-002
+  fix, so after a failed run the app believed it was already rooted and refused a legitimate retry.
+  Now calls `RootState.isRooted()`.
 - **Fixed:** the update check and the Github Page row pointed at the parent repo, which would have
   offered an APK signed with a different key.
 - **Docs:** new README with animated SVGs, `LICENSE`, `LICENSING.md`, `THIRD_PARTY_NOTICES.md`.
